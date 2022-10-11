@@ -1,10 +1,11 @@
 use crate::models::todo::Todo;
+use std::rc::Rc;
 use stylist::yew::{styled_component, use_style};
 use yew::prelude::*;
 
 #[derive(Properties, PartialEq)]
 pub struct TodoProps {
-    pub todo: Todo,
+    pub todo: Rc<Todo>,
     pub on_delete: Callback<String>,
 }
 

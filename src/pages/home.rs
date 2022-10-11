@@ -1,3 +1,4 @@
+use std::rc::Rc;
 use stylist::yew::use_style;
 use yew::prelude::*;
 
@@ -6,7 +7,7 @@ use crate::models::todo::Todo;
 
 #[function_component(Home)]
 pub fn home() -> Html {
-    let todos = use_state(|| Vec::<Todo>::new());
+    let todos = use_state(|| Vec::<Rc<Todo>>::new());
 
     let todos_container = use_style!(
         r#"
@@ -21,7 +22,7 @@ pub fn home() -> Html {
         let todos = todos.clone();
         Callback::from(move |todo: Todo| {
             let mut new_todos = todos.to_vec();
-            new_todos.push(todo);
+            new_todos.push(Rc::new(todo));
             todos.set(new_todos);
         })
     };
@@ -45,11 +46,11 @@ pub fn home() -> Html {
             <h1>{"Todo app"}</h1>
             <TodoForm {onsubmit} />
             <div class={todos_container}>
-                {for (*todos)
+                {for todos
                     .iter()
                     .map(|todo| html! {
                         <TodoComponent
-                            todo={todo.clone()}
+                            todo={todo}
                             on_delete={on_delete.clone()}
                             key={todo.id.to_string()}
                         />
